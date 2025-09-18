@@ -7,11 +7,14 @@ const DiseaseDetection = () => {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Get backend URL from Vite environment variable
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImage(file);
-      setPreview(URL.createObjectURL(file)); // ✅ Preview
+      setPreview(URL.createObjectURL(file));
       setResult(null);
     }
   };
@@ -24,7 +27,8 @@ const DiseaseDetection = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:5000/predict", formData, {
+
+      const res = await axios.post(`${backendUrl}/predict`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -77,7 +81,10 @@ const DiseaseDetection = () => {
 
       {/* Results */}
       {result && (
-        <div className="card shadow-lg p-4 mt-4 mx-auto" style={{ maxWidth: "500px" }}>
+        <div
+          className="card shadow-lg p-4 mt-4 mx-auto"
+          style={{ maxWidth: "500px" }}
+        >
           <h4 className="text-danger mb-3">🦠 Disease: {result.disease}</h4>
           <p className="text-primary fs-5">
             💡 <strong>Solution:</strong> {result.solution}
